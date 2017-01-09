@@ -14,70 +14,8 @@ CHECKSYSTEM=http://soft.91yun.org/soft/serverspeeder/checksystem.php
 BIN=downloadurl
 
 
+release=CentOS ver1=6.5 ver2=4.4.0-x86_64-linode63 ver3=x64 ver4=3.10.61.0
 
-#取操作系统的名称
-Get_Dist_Name()
-{
-    if grep -Eqi "CentOS" /etc/issue || grep -Eq "CentOS" /etc/*-release; then
-        DISTRO='CentOS'
-        PM='yum'
-    elif grep -Eqi "Debian" /etc/issue || grep -Eq "Debian" /etc/*-release; then
-        DISTRO='Debian'
-        PM='apt'
-    elif grep -Eqi "Ubuntu" /etc/issue || grep -Eq "Ubuntu" /etc/*-release; then
-        DISTRO='Ubuntu'
-        PM='apt'
-    elif grep -Eqi "Raspbian" /etc/issue || grep -Eq "Raspbian" /etc/*-release; then
-        DISTRO='Raspbian'
-        PM='apt'
-	else
-        DISTRO='unknow'
-    fi
-    Get_OS_Bit
-}
-
-Get_OS_Bit()
-{
-    if [[ `getconf WORD_BIT` = '32' && `getconf LONG_BIT` = '64' ]] ; then
-        ver3='x64'
-    else
-        ver3='x32'
-    fi
-}
-
-Get_Dist_Name
-
-#安装相应的软件
-if [ "$DISTRO" == "CentOS" ];then
-	yum install -y redhat-lsb curl net-tools
-elif [ "$DISTRO" == "Debian" ];then
-	apt-get update
-	apt-get install -y lsb-release curl
-elif [ "$DISTRO" == "Raspbian" ];then
-	apt-get update
-	apt-get install -y lsb-release curl
-elif [ "$DISTRO" == "Ubuntu" ];then
-	apt-get update
-	apt-get install -y lsb-release curl
-else
-	echo "一键脚本暂时只支持centos，ubuntu和debian的安装，其他系统请选择手动安装http://www.91yun.org/serverspeeder91yun"
-	exit 1
-fi
-
-release=$DISTRO
-#发行版本
-if [ "$release" == "Debian" ]; then
-	ver1str="lsb_release -rs | awk -F '.' '{ print \$1 }'"
-else
-	ver1str="lsb_release -rs | awk -F '.' '{ print \$1\".\"\$2 }'"
-fi
-ver1=$(eval $ver1str)
-#ver11=`echo $ver1 | awk -F '.' '{ print $1 }'`
-
-#内核版本
-ver2=`uname -r`
-#锐速版本
-ver4=3.10.61.0
 
 echo "================================================="
 echo "操作系统：$release "
